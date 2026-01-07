@@ -2,6 +2,7 @@ package com.bank.india.api;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.Map;
@@ -30,14 +31,19 @@ public class WalletController {
     @PostMapping("/{walletId}/credit")
     public Map<String, Object> credit(@PathVariable UUID walletId, @RequestBody Map<String, Object> request) {
         BigDecimal amount = new BigDecimal(request.get("amount").toString());
-        Wallet wallet = service.credit(walletId, amount);
+        String transactionReference = request.get("reference").toString();
+        Wallet wallet = service.credit(walletId, amount, transactionReference);
         return Map.of("walletId", wallet.getId(), "newBalance", wallet.getBalance(), "message", "Wallet credited successfully");
     }
 
     @PostMapping("/{walletId}/debit")
     public Map<String, Object> debit(@PathVariable UUID walletId, @RequestBody Map<String, Object> request) {
         BigDecimal amount = new BigDecimal(request.get("amount").toString());
-        Wallet wallet = service.debit(walletId, amount);
+
+        String transactionReference = request.get("reference").toString();
+        Wallet wallet = service.debit(walletId, amount, transactionReference);
         return Map.of("walletId", wallet.getId(), "newBalance", wallet.getBalance(), "message", "Wallet debited successfully");
     }
+
+
 }
